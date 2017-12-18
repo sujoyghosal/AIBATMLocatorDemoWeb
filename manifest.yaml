@@ -1,4 +1,4 @@
 applications:
-- name: AIBATMLocatorDemoWeb
+- name: ATMLocatorDemoWeb
   random-route: true
   memory: 128M
