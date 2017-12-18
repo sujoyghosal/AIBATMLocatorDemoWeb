@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        table,
+        td,
+        th {
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        th,
+        td {
+            padding: 15px;
+        }
+        
+        .button {
+            background-color: #5BB200;
+            /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
+            cursor: pointer;
+        }
+        
+        .button1 {
+            font-size: 10px;
+            font-family: verdana;
+        }
+        
+        .button2 {
+            font-size: 14px;
+            font-family: verdana;
+        }
+        
+        .button3 {
+            font-size: 16px;
+            font-family: verdana;
+        }
+        
+        .button4 {
+            font-size: 20px;
+            font-family: verdana;
+        }
+        
+        .button5 {
+            font-size: 24px;
+            font-family: verdana;
+        }
+        
+        input[type=text] {
+            width: 20%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            box-sizing: border-box;
+            border: 2px solid red;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+            font-size: 14px;
+            font-family: verdana;
+        }
+        
+        select {
+            width: 14%;
+            padding: 12px 20px;
+            border: 2px solid red;
+            box-sizing: border-box;
+            border-radius: 4px;
+            background-color: #f1f1f1;
+            font-size: 14px;
+            font-family: verdana;
+        }
+        
+        a:link,
+        a:visited {
+            background-color: #82FF00;
+            color: black;
+            padding: 14px 25px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        a:hover,
+        a:active {
+            background-color: red;
+        }
+    </style>
+</head>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<body style="font-family:verdana">
+
+    <div ng-app="myApp" ng-controller="myCtrl">
+
+        <h1>AIB ATMS NEAR AN ADDRESS</h1>
+        Within Distance:
+        <select ng-model="radius" ng-init="radius = 100" ng-change="GetATMS()">
+    <option value="100" ng-selected="true">100m
+    <option value="500">500m
+    <option value="1000">1Km
+    <option value="2000">2Km
+    <option value="3000">3Km
+    <option value="4000">4Km
+    <option value="5000">5Km
+    <option value="6000">6Km
+</select> Of Address <input type="text" ng-model="address">
+        <button class="button button2" ng-click="GetATMS()">GET AIB ATMS NEARBY</button>
+        <p ng-show=geocodesuccess>GeoCoded Address Lat/Lng: {{geoCodeResponse.results[0].geometry.location}}</p>
+        <h2 ng-show=nearbyatmssuccess>{{'NearBy ATMs Within ' + radius + 'm'}}</h2>
+        <!--
+		<ul>
+			<li ng-repeat="atm in NearbyATMs">
+				{{ atm.name + ', ' + atm.Address + ', ' + atm.Telephone }}
+				<a id="link-6" ng-href="{{atm.PhotoURL}}" target="_blank"> See in Map</a>
+			</li>
+		</ul> -->
+        <table id="atmstable" ng-show="nearbyatmssuccess" id="searchTextResults">
+            <thead>
+                <tr>
+                    <th>Closest</th>
+                    <th>Name</th>
+                    <th>Telephone</th>
+                    <th>Address</th>
+                    <th>Maps</th>
+                </tr>
+            </thead>
+            <tr ng-repeat="atm in NearbyATMs">
+                <td>{{$index + 1}}</td>
+                <td>{{atm.name}}</td>
+                <td>{{atm.Telephone}}</td>
+                <td>{{atm.Address}}</td>
+
+                <td><a id="link-6" ng-href="{{atm.PhotoURL}}" target="_blank"> See in Map</a></td>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        var app = angular.module('myApp', []);
+        app.controller('myCtrl', function($scope, $http) {
+            $scope.address = "Pembroke Road, Dublin, Ireland";
+            $scope.geocodesuccess = false;
+            $scope.nearbyatmssuccess = false;
+            $scope.GetATMS = function() {
+                //  alert($scope.address);
+                $http({
+                    method: "GET",
+                    url: "https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyAJBIQdfnhuEcSi6qFDoXCszJpRZxlSFZ0&address=" + $scope.address
+                }).then(function mySucces(response) {
+                    $scope.geoCodeResponse = response.data;
+                    $scope.geocodesuccess = true;
+                    $scope.GetNearByATMs($scope.geoCodeResponse.results[0].geometry.location);
+                }, function myError(response) {
+                    $scope.geoCodeResponse = response.statusText;
+                });
+            }
+            $scope.GetNearByATMs = function() {
+                //  alert($scope.radius);
+                console.log("URL = http://sujoyghosal-test.apigee.net/aib-atms-proxy/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968");
+                $http({
+                    method: "GET",
+                    //  url: "https://aibatmlocatorapidemo.mybluemix.net/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968"
+                    url: "http://sujoyghosal-test.apigee.net/aib-atms/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968"
+                }).then(function mySucces(response) {
+                    $scope.nearbyatmssuccess = true;
+                    $scope.NearbyATMs = response.data;
+                    console.log("Response=" + JSON.stringify(response.data));
+                }, function myError(response) {
+                    alert("Error " + response);
+                    $scope.NearbyATMs = response.statusText;
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

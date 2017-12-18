@@ -1,0 +1,14 @@
+{
+    "name": "AIBATMLocatorDemoWeb",
+    "version": "1.0.0",
+    "description": "AIB ATM Locations Web",
+    "author": "Sujoy Ghosal <gsujoy@yahoo.com>",
+    "main": "aibatmsweb.js",
+    "scripts": {
+        "start": "node aibatmsweb.js"
+    },
+    "dependencies": {
+        "express": "^4.13.3",
+        "path": "*"
+    }
+}
