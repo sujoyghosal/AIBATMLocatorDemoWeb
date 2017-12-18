@@ -117,13 +117,6 @@
         <button class="button button2" ng-click="GetATMS()">GET AIB ATMS NEARBY</button>
         <p ng-show=geocodesuccess>GeoCoded Address Lat/Lng: {{geoCodeResponse.results[0].geometry.location}}</p>
         <h2 ng-show=nearbyatmssuccess>{{'NearBy ATMs Within ' + radius + 'm'}}</h2>
-        <!--
-		<ul>
-			<li ng-repeat="atm in NearbyATMs">
-				{{ atm.name + ', ' + atm.Address + ', ' + atm.Telephone }}
-				<a id="link-6" ng-href="{{atm.PhotoURL}}" target="_blank"> See in Map</a>
-			</li>
-		</ul> -->
         <table id="atmstable" ng-show="nearbyatmssuccess" id="searchTextResults">
             <thead>
                 <tr>
