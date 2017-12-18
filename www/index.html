@@ -103,7 +103,7 @@
 
     <div ng-app="myApp" ng-controller="myCtrl">
 
-        <h1>ATMS NEAR AN ADDRESS</h1>
+        <h1>AIB ATMS NEAR AN ADDRESS</h1>
         Within Distance:
         <select ng-model="radius" ng-init="radius = 100" ng-change="GetATMS()">
             <option value="500">500m
@@ -116,7 +116,7 @@
         </select> Of Address <input type="text" ng-model="address">
         <button class="button button2" ng-click="GetATMS()">GET ATMS NEARBY</button>
         <p ng-show=geocodesuccess>GeoCoded Address Lat/Lng: {{geoCodeResponse.results[0].geometry.location}}</p>
-        <h2 ng-show=nearbyatmssuccess>{{'NearBy ATMs Within ' + radius + 'm'}}</h2>
+        <h2 ng-show=nearbyatmssuccess>{{'NearBy AIB ATMs Within ' + radius + 'm'}}</h2>
         <table id="atmstable" ng-show="nearbyatmssuccess" id="searchTextResults">
             <thead>
                 <tr>
