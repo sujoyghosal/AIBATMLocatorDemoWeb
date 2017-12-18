@@ -132,7 +132,8 @@
                     <th>Name</th>
                     <th>Telephone</th>
                     <th>Address</th>
-                    <th>Maps</th>
+                    <th>Street View</th>
+                    <th>Directions</th>
                 </tr>
             </thead>
             <tr ng-repeat="atm in NearbyATMs">
@@ -141,7 +142,8 @@
                 <td>{{atm.Telephone}}</td>
                 <td>{{atm.Address}}</td>
 
-                <td><a id="link-6" ng-href="{{atm.PhotoURL}}" target="_blank"> See in Map</a></td>
+                <td><a id="link-6" ng-href="{{atm.PhotoURL}}" target="_blank"> Street View</a></td>
+                <td><a id="link-5" ng-href="https://maps.google.com?saddr={{address}}&daddr={{atm.Address}}" target="_blank"> Directions</a></td>
             </tr>
         </table>
     </div>
@@ -166,18 +168,22 @@
                 });
             }
             $scope.GetNearByATMs = function() {
-                //  alert($scope.radius);
-                console.log("URL = http://sujoyghosal-test.apigee.net/aib-atms-proxy/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968");
+                //var BASEURL = "http://sujoyghosal-test.apigee.net/aibatmlocatorapipassthruproxy";
+                var BASEURL = "https://aibatmlocatorapidemo.mybluemix.net"
+                var url = BASEURL + "/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968";
+                console.log("URL = " + url);
                 $http({
                     method: "GET",
-                    //  url: "https://aibatmlocatorapidemo.mybluemix.net/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968"
-                    url: "http://sujoyghosal-test.apigee.net/aib-atms/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968"
+                    url: url
+                        /*headers: {
+                            key: 'f3438d22-32da-45ed-8157-b96a57f26626'
+                        }*/
                 }).then(function mySucces(response) {
                     $scope.nearbyatmssuccess = true;
                     $scope.NearbyATMs = response.data;
-                    console.log("Response=" + JSON.stringify(response.data));
+                    console.log("Response From Vicinity API: \n" + JSON.stringify(response.data));
                 }, function myError(response) {
-                    alert("Error " + response);
+                    alert("Error " + JSON.stringify(response));
                     $scope.NearbyATMs = response.statusText;
                 });
             }
