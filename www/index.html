@@ -106,15 +106,14 @@
         <h1>AIB ATMS NEAR AN ADDRESS</h1>
         Within Distance:
         <select ng-model="radius" ng-init="radius = 100" ng-change="GetATMS()">
-    <option value="100" ng-selected="true">100m
-    <option value="500">500m
-    <option value="1000">1Km
-    <option value="2000">2Km
-    <option value="3000">3Km
-    <option value="4000">4Km
-    <option value="5000">5Km
-    <option value="6000">6Km
-</select> Of Address <input type="text" ng-model="address">
+            <option value="500">500m
+            <option value="1000">1Km
+            <option value="2000">2Km
+            <option value="3000">3Km
+            <option value="4000">4Km
+            <option value="5000">5Km
+            <option value="6000">6Km
+        </select> Of Address <input type="text" ng-model="address">
         <button class="button button2" ng-click="GetATMS()">GET AIB ATMS NEARBY</button>
         <p ng-show=geocodesuccess>GeoCoded Address Lat/Lng: {{geoCodeResponse.results[0].geometry.location}}</p>
         <h2 ng-show=nearbyatmssuccess>{{'NearBy ATMs Within ' + radius + 'm'}}</h2>
