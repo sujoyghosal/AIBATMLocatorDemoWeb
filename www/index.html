@@ -93,7 +93,7 @@
         
         a:hover,
         a:active {
-            background-color: red;
+            background-color: rgb(208, 255, 0);
         }
     </style>
 </head>
@@ -154,31 +154,48 @@
                 }).then(function mySucces(response) {
                     $scope.geoCodeResponse = response.data;
                     $scope.geocodesuccess = true;
-                    $scope.GetNearByATMs($scope.geoCodeResponse.results[0].geometry.location);
+                    console.log("Geocoded Location is " + JSON.stringify($scope.geoCodeResponse.results[0].geometry.location));
+                    $scope.OrchestrateNearbyATMs($scope.geoCodeResponse.results[0].geometry.location);
                 }, function myError(response) {
                     $scope.geoCodeResponse = response.statusText;
                 });
             }
-            $scope.GetNearByATMs = function() {
-                //var BASEURL = "http://sujoyghosal-test.apigee.net/aibatmlocatorapipassthruproxy";
-                var BASEURL = "https://aibatmlocatorapidemo.mybluemix.net"
-                var url = BASEURL + "/vicinityatms?radius=" + $scope.radius + "&latitude=53.3246534&longitude=-6.2408968";
-                console.log("URL = " + url);
-                $http({
-                    method: "GET",
-                    url: url
-                        /*headers: {
-                            key: 'f3438d22-32da-45ed-8157-b96a57f26626'
-                        }*/
-                }).then(function mySucces(response) {
-                    $scope.nearbyatmssuccess = true;
-                    $scope.NearbyATMs = response.data;
-                    console.log("Response From Vicinity API: \n" + JSON.stringify(response.data));
+            $scope.OrchestrateNearbyATMs = function() {
+                var options = {
+                    method: 'GET',
+                    url: 'https://apibaas-trial.apigee.net/sujoyghosal/AIBLOCATIONS/token?grant_type=password&username=gsujoy&password=Kolkata1'
+                };
+                $http(options).then(function mySucces(response) {
+                    console.log(JSON.stringify(response));
+                    $scope.token = response.data.access_token;
+                    console.log("####Received access token " + $scope.token);
+                    $scope.GetNearByATMS($scope.token);
                 }, function myError(response) {
                     alert("Error " + JSON.stringify(response));
                     $scope.NearbyATMs = response.statusText;
                 });
             }
+            $scope.GetNearByATMS = function(token) {
+                var url = 'https://apibaas-trial.apigee.net/sujoyghosal/AIBLOCATIONS/atms?access_token=' + token +
+                    '&ql=location within ' + $scope.radius + ' of ' +
+                    $scope.geoCodeResponse.results[0].geometry.location.lat + ', ' +
+                    $scope.geoCodeResponse.results[0].geometry.location.lng;
+                console.log("####GeoQuery=" + url);
+                var options = {
+                    method: 'GET',
+                    url: encodeURI(url)
+                };
+                $http(options).then(function mySucces(response) {
+                    console.log("####Received vicinity atms " + JSON.stringify(response.data.entities));
+                    $scope.NearbyATMs = response.data.entities;
+                    $scope.nearbyatmssuccess = true;
+                }, function myError(response) {
+                    alert("Error " + JSON.stringify(response));
+                    $scope.NearbyATMs = response.statusText;
+                    $scope.nearbyatmssuccess = false;
+                });
+            }
+
         });
     </script>
 
